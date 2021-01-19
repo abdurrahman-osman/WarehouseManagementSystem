@@ -5,6 +5,7 @@ import com.fimba.WarehouseManagmentSystem.Model.Dto.WarehouseDTO;
 import com.fimba.WarehouseManagmentSystem.Response.ResponseHolder;
 import com.fimba.WarehouseManagmentSystem.Service.WarehouseService.WarehouseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
