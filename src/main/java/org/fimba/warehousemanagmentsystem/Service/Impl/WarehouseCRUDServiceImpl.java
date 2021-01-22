@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +51,7 @@ public class WarehouseCRUDServiceImpl implements WarehouseCRUDService {
         WarehouseEntity warehouseEntity = converterToWarehouseEntity.convert(dto);
         warehouseEntity.setUpdatedDate(new Date());
         warehouseCRUDRepository.save(warehouseEntity);
-        dto.setCreatedDate(warehouseCRUDRepository.getOne(1L).getCreatedDate());
+        dto.setCreatedDate(warehouseCRUDRepository.getOne(dto.getId()).getCreatedDate());
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }
 
