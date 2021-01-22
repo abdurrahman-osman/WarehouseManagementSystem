@@ -40,7 +40,7 @@ public class WarehouseCRUDServiceImpl implements WarehouseCRUDService {
     public ResponseEntity<WarehouseDTO> create(WarehouseDTO dto) {
         WarehouseEntity warehouseEntity = converterToWarehouseEntity.convert(dto);
         warehouseEntity.setCreatedDate(new Date());
-        log.info(warehouseEntity.getStatus().toString());
+
         warehouseEntity = warehouseCRUDRepository.save(warehouseEntity);
         dto = converterToWarehouseDTO.convert(warehouseEntity);
         return new ResponseEntity<>(dto,HttpStatus.OK);
@@ -51,7 +51,7 @@ public class WarehouseCRUDServiceImpl implements WarehouseCRUDService {
         WarehouseEntity warehouseEntity = converterToWarehouseEntity.convert(dto);
         warehouseEntity.setUpdatedDate(new Date());
         warehouseCRUDRepository.save(warehouseEntity);
-        dto = converterToWarehouseDTO.convert(warehouseCRUDRepository.getOne(dto.getId()));
+        dto.setCreatedDate(warehouseCRUDRepository.getOne(1L).getCreatedDate());
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }
 

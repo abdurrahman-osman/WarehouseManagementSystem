@@ -16,10 +16,10 @@ public class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
-    @Column(nullable = false,unique = true)
+    @Column(unique = true)
     private String code;
 
     @Column(updatable = false)

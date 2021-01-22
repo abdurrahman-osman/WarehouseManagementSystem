@@ -9,7 +9,7 @@ import java.util.Collection;
 
 @Repository
 public interface WarehouseCRUDRepository extends JpaRepository<WarehouseEntity,Long> {
-    @Query(value ="SELECT w FROM WarehouseEntity w WHERE w.warehouseStatus='ACTIVE' OR w.warehouseStatus='PASSIVE' ",nativeQuery = true)
+    @Query(value ="SELECT * FROM warehouse w WHERE w.status='ACTIVE' OR w.status='PASSIVE' ",nativeQuery = true)
     Collection<WarehouseEntity> findAllActiveAndPassive();
 
 
