@@ -48,10 +48,10 @@ public class WarehouseCRUDServiceImpl implements WarehouseCRUDService {
 
     @Override
     public ResponseEntity<WarehouseDTO> update(WarehouseDTO dto) {
-        WarehouseEntity warehouseEntity = converterToWarehouseEntity.convert(dto);
+        WarehouseEntity warehouseEntity = warehouseCRUDRepository.getOne(dto.getId());
         warehouseEntity.setUpdatedDate(new Date());
         warehouseCRUDRepository.save(warehouseEntity);
-        dto.setCreatedDate(warehouseCRUDRepository.getOne(dto.getId()).getCreatedDate());
+        dto = converterToWarehouseDTO.convert(warehouseEntity);
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }
 

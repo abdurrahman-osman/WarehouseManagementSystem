@@ -17,7 +17,7 @@ public class ConverterToWarehouseEntity implements BaseConverter<WarehouseDTO, W
         warehouseEntity.setName(warehouseDTO.getName());
         warehouseEntity.setStatus(warehouseDTO.getStatus());
         warehouseEntity.setId(warehouseDTO.getId());
-        warehouseEntity.setCreatedDate(warehouseDTO.getCreatedDate());
+
 
 
         return warehouseEntity;
