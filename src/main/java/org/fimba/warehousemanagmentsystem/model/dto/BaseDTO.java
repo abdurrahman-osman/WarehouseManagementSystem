@@ -11,9 +11,9 @@ import java.util.Date;
 @Setter
 public class BaseDTO implements Serializable {
     private Long id;
-    @NotEmpty
+    @NotEmpty(message = "Name must not empty")
     private String name;
-    @NotEmpty
+    @NotEmpty(message = "Code must not empty")
     private String code;
     private Date createdDate;
     private Date updatedDate;

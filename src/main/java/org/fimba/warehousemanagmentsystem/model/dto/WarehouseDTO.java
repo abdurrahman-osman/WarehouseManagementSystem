@@ -9,6 +9,6 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 public class WarehouseDTO extends BaseDTO {
-    @NotEmpty
+    @NotEmpty(message = "Status must not empty")
     private WarehouseStatus status;
 }

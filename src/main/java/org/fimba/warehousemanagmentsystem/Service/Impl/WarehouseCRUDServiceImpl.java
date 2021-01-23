@@ -6,6 +6,7 @@ import org.fimba.warehousemanagmentsystem.Converter.WarehouseConverter.Converter
 import org.fimba.warehousemanagmentsystem.Converter.WarehouseConverter.ConverterToWarehouseEntity;
 import org.fimba.warehousemanagmentsystem.Service.WarehouseCRUDService;
 import org.fimba.warehousemanagmentsystem.dao.WarehouseRepository.WarehouseCRUDRepository;
+import org.fimba.warehousemanagmentsystem.dao.WarehouseRepository.WarehouseOperationRepository;
 import org.fimba.warehousemanagmentsystem.model.dto.WarehouseDTO;
 import org.fimba.warehousemanagmentsystem.model.entities.WarehouseEntity;
 import org.fimba.warehousemanagmentsystem.model.enums.WarehouseStatus;
@@ -25,6 +26,7 @@ public class WarehouseCRUDServiceImpl implements WarehouseCRUDService {
     private final WarehouseCRUDRepository warehouseCRUDRepository;
     private final ConverterToWarehouseDTO converterToWarehouseDTO;
     private final ConverterToWarehouseEntity converterToWarehouseEntity;
+    private final WarehouseOperationRepository warehouseOperationRepository;
 
     @Override
     public ResponseEntity<Collection<WarehouseDTO>> list() {
@@ -39,6 +41,10 @@ public class WarehouseCRUDServiceImpl implements WarehouseCRUDService {
     @Override
     public ResponseEntity<WarehouseDTO> create(WarehouseDTO dto) {
         WarehouseEntity warehouseEntity = converterToWarehouseEntity.convert(dto);
+        if (warehouseOperationRepository.existsWarehouseEntityByCode(dto.getCode())){
+            return ResponseEntity.noContent().build();
+        }
+
         warehouseEntity.setCreatedDate(new Date());
 
         warehouseEntity = warehouseCRUDRepository.save(warehouseEntity);
@@ -49,9 +55,13 @@ public class WarehouseCRUDServiceImpl implements WarehouseCRUDService {
     @Override
     public ResponseEntity<WarehouseDTO> update(WarehouseDTO dto) {
         WarehouseEntity warehouseEntity = warehouseCRUDRepository.getOne(dto.getId());
+        Date createdDate = warehouseEntity.getCreatedDate();
+        warehouseEntity = converterToWarehouseEntity.convert(dto);
+        warehouseEntity.setCreatedDate(createdDate);
         warehouseEntity.setUpdatedDate(new Date());
         warehouseCRUDRepository.save(warehouseEntity);
         dto = converterToWarehouseDTO.convert(warehouseEntity);
+
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }
 
@@ -59,6 +69,7 @@ public class WarehouseCRUDServiceImpl implements WarehouseCRUDService {
     public ResponseEntity<WarehouseDTO> delete(WarehouseDTO idDto) {
         WarehouseEntity warehouseEntity = warehouseCRUDRepository.getOne(idDto.getId());
         warehouseEntity.setStatus(WarehouseStatus.DELETED);
+        warehouseEntity.setUpdatedDate(new Date());
         warehouseCRUDRepository.save(warehouseEntity);
         idDto = converterToWarehouseDTO.convert(warehouseEntity);
         return ResponseEntity.ok(idDto);
