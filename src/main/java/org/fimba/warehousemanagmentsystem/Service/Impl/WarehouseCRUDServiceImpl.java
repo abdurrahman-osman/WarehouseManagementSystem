@@ -1,77 +1,74 @@
-package org.fimba.warehousemanagmentsystem.Service.Impl;
+package org.fimba.warehousemanagmentsystem.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.fimba.warehousemanagmentsystem.Converter.WarehouseConverter.ConverterToWarehouseDTO;
-import org.fimba.warehousemanagmentsystem.Converter.WarehouseConverter.ConverterToWarehouseEntity;
-import org.fimba.warehousemanagmentsystem.Service.WarehouseCRUDService;
-import org.fimba.warehousemanagmentsystem.dao.WarehouseRepository.WarehouseCRUDRepository;
-import org.fimba.warehousemanagmentsystem.dao.WarehouseRepository.WarehouseOperationRepository;
+import org.fimba.warehousemanagmentsystem.base.WarehouseAPIResponseHolder;
+import org.fimba.warehousemanagmentsystem.convertor.ConvertToWarehouseDTO;
+import org.fimba.warehousemanagmentsystem.convertor.ConvertToWarehouseEntity;
+import org.fimba.warehousemanagmentsystem.dao.WarehouseCRUDRepository;
 import org.fimba.warehousemanagmentsystem.model.dto.WarehouseDTO;
+import org.fimba.warehousemanagmentsystem.model.entities.ProductWarehouseId;
 import org.fimba.warehousemanagmentsystem.model.entities.WarehouseEntity;
 import org.fimba.warehousemanagmentsystem.model.enums.WarehouseStatus;
+import org.fimba.warehousemanagmentsystem.service.ProductOperationService;
+import org.fimba.warehousemanagmentsystem.service.WarehouseCRUDService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
-
-@Service
 @RequiredArgsConstructor
-@Slf4j
+@Service
 public class WarehouseCRUDServiceImpl implements WarehouseCRUDService {
+
+    private final ConvertToWarehouseDTO convertToWarehouseDTO;
+    private final ConvertToWarehouseEntity convertToWarehouseEntity;
     private final WarehouseCRUDRepository warehouseCRUDRepository;
-    private final ConverterToWarehouseDTO converterToWarehouseDTO;
-    private final ConverterToWarehouseEntity converterToWarehouseEntity;
-    private final WarehouseOperationRepository warehouseOperationRepository;
+    private final ProductOperationServiceImpl productOperationService;
 
     @Override
-    public ResponseEntity<Collection<WarehouseDTO>> list() {
+    public WarehouseAPIResponseHolder<Collection<WarehouseDTO>> list() {
         Collection<WarehouseEntity> warehouseEntities = warehouseCRUDRepository.findAllActiveAndPassive();
-        Collection<WarehouseDTO> warehouseDTOS = new ArrayList<>();
-        for (WarehouseEntity warehouseEntity : warehouseEntities) {
-            warehouseDTOS.add(converterToWarehouseDTO.convert(warehouseEntity));
-        }
-        return new ResponseEntity<>(warehouseDTOS,HttpStatus.OK);
+        List<WarehouseDTO> warehouseDTOList = warehouseEntities
+                .stream()
+                .map(convertToWarehouseDTO::convertor)
+                .collect(Collectors.toList());
+        return new WarehouseAPIResponseHolder<>(warehouseDTOList,HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<WarehouseDTO> create(WarehouseDTO dto) {
-        WarehouseEntity warehouseEntity = converterToWarehouseEntity.convert(dto);
-        if (warehouseOperationRepository.existsWarehouseEntityByCode(dto.getCode())){
-            return ResponseEntity.noContent().build();
-        }
-
+    public WarehouseAPIResponseHolder<WarehouseDTO> create(WarehouseDTO dto) {
+        WarehouseEntity warehouseEntity = convertToWarehouseEntity.convertor(dto);
         warehouseEntity.setCreatedDate(new Date());
 
-        warehouseEntity = warehouseCRUDRepository.save(warehouseEntity);
-        dto = converterToWarehouseDTO.convert(warehouseEntity);
-        return new ResponseEntity<>(dto,HttpStatus.OK);
+        WarehouseEntity savedEntity = warehouseCRUDRepository.save(warehouseEntity);
+        WarehouseDTO warehouseDTO = convertToWarehouseDTO.convertor(savedEntity);
+        return new WarehouseAPIResponseHolder<>(warehouseDTO,HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<WarehouseDTO> update(WarehouseDTO dto) {
-        WarehouseEntity warehouseEntity = warehouseCRUDRepository.getOne(dto.getId());
-        Date createdDate = warehouseEntity.getCreatedDate();
-        warehouseEntity = converterToWarehouseEntity.convert(dto);
-        warehouseEntity.setCreatedDate(createdDate);
-        warehouseEntity.setUpdatedDate(new Date());
-        warehouseCRUDRepository.save(warehouseEntity);
-        dto = converterToWarehouseDTO.convert(warehouseEntity);
+    public WarehouseAPIResponseHolder<WarehouseDTO> update(WarehouseDTO dto) {
 
-        return new ResponseEntity<>(dto,HttpStatus.OK);
+        WarehouseEntity updateEntity = warehouseCRUDRepository.getOne(dto.getId());
+        Date date = updateEntity.getCreatedDate();
+        updateEntity = convertToWarehouseEntity.convertor(dto);
+        updateEntity.setCreatedDate(date);
+        updateEntity.setUpdatedDate(new Date());
+        warehouseCRUDRepository.save(updateEntity);
+        WarehouseDTO warehouseDTO = convertToWarehouseDTO.convertor(updateEntity);
+        return new WarehouseAPIResponseHolder<>(warehouseDTO,HttpStatus.OK);
+
     }
 
     @Override
-    public ResponseEntity<WarehouseDTO> delete(WarehouseDTO idDto) {
-        WarehouseEntity warehouseEntity = warehouseCRUDRepository.getOne(idDto.getId());
-        warehouseEntity.setStatus(WarehouseStatus.DELETED);
-        warehouseEntity.setUpdatedDate(new Date());
+    public WarehouseAPIResponseHolder<?> delete(WarehouseDTO id) {
+        WarehouseEntity warehouseEntity = warehouseCRUDRepository.getOne(id.getId());
+        warehouseEntity.setStatus(WarehouseStatus.PASSIVE);
         warehouseCRUDRepository.save(warehouseEntity);
-        idDto = converterToWarehouseDTO.convert(warehouseEntity);
-        return ResponseEntity.ok(idDto);
+        return new WarehouseAPIResponseHolder<>(HttpStatus.OK);
+
     }
+
 }

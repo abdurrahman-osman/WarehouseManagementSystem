@@ -2,13 +2,16 @@ package org.fimba.warehousemanagmentsystem.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.fimba.warehousemanagmentsystem.model.entities.ProductWarehouse;
+import org.fimba.warehousemanagmentsystem.model.entities.ProductWarehouseId;
 import org.fimba.warehousemanagmentsystem.model.enums.WarehouseStatus;
 
-import javax.validation.constraints.NotEmpty;
+import java.util.Set;
 
 @Getter
 @Setter
 public class WarehouseDTO extends BaseDTO {
-    @NotEmpty(message = "Status must not empty")
-    private WarehouseStatus status;
+
+    private ProductWarehouseId productWarehouseId;
+    private WarehouseStatus status = WarehouseStatus.ACTIVE;
 }

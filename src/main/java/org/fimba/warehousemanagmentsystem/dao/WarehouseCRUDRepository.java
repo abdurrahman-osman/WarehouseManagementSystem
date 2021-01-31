@@ -1,4 +1,4 @@
-package org.fimba.warehousemanagmentsystem.dao.WarehouseRepository;
+package org.fimba.warehousemanagmentsystem.dao;
 
 import org.fimba.warehousemanagmentsystem.model.entities.WarehouseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,9 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 @Repository
-public interface WarehouseCRUDRepository extends JpaRepository<WarehouseEntity,Long> {
-    @Query(value ="SELECT * FROM warehouse w WHERE w.status='ACTIVE' OR w.status='PASSIVE' ",nativeQuery = true)
+public interface WarehouseCRUDRepository extends JpaRepository<WarehouseEntity, Long> {
+    @Query("SELECT w FROM WarehouseEntity w WHERE w.status='ACTIVE' OR w.status ='PASSIVE' ")
     Collection<WarehouseEntity> findAllActiveAndPassive();
-
-
 }
