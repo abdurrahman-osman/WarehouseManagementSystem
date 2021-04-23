@@ -1,5 +1,6 @@
 package org.fimba.warehousemanagmentsystem.base;
 
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 public class WarehouseAPIResponseHolder<T> {
+
+    public WarehouseAPIResponseHolder(T responseData) {
+        this.responseData = responseData;
+    }
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T responseData;
     @JsonInclude(JsonInclude.Include.NON_NULL)

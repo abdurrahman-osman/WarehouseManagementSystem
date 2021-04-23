@@ -5,11 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-
-
 @Repository
-public interface ProductCRUDRepository extends JpaRepository<ProductEntity, Long> {
-    @Query("SELECT w FROM ProductEntity w WHERE w.status ='ACTIVE' ")
-    Collection<ProductEntity> findAllActive();
+public interface ProductOperationRepository extends JpaRepository<ProductEntity,Long> {
+    @Query("select w from  ProductEntity w where w.code=?1")
+    ProductEntity findProductEntityByCode(String code);
 }

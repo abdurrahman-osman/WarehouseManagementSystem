@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConvertToWarehouseDTO implements WarehouseAPIBaseConvetor<WarehouseEntity, WarehouseDTO> {
     @Override
-    public WarehouseDTO convertor(WarehouseEntity convert) {
+    public WarehouseDTO convert(WarehouseEntity convert) {
         WarehouseDTO warehouseDTO = new WarehouseDTO();
         warehouseDTO.setId(convert.getId());
         warehouseDTO.setName(convert.getName());

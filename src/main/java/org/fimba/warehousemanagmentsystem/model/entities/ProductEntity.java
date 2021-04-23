@@ -1,6 +1,8 @@
 package org.fimba.warehousemanagmentsystem.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.fimba.warehousemanagmentsystem.model.enums.ProductStatus;
 
@@ -11,12 +13,11 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@RequiredArgsConstructor
 public class ProductEntity extends BaseEntity{
 
 
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-    private Set<ProductWarehouse> productWarehouses;
 
     @Column(name = "VAT_RATE", precision = 4, scale = 2)
     private BigDecimal vatRate = BigDecimal.valueOf(00.00);
@@ -36,4 +37,10 @@ public class ProductEntity extends BaseEntity{
     @Enumerated(value = EnumType.STRING)
     @Column(name = "STATUS", length = 7, nullable = false)
     private ProductStatus status = ProductStatus.ACTIVE;
+
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "productEntity")
+    Set<ProductWarehouseEntity> warehouseEntities;
 }

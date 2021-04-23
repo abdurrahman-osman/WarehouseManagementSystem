@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ConvertTOProductEntity implements WarehouseAPIBaseConvetor<ProductDTO, ProductEntity> {
-    @Override
-    public ProductEntity convertor(ProductDTO convert) {
+    public ProductEntity convert(ProductDTO convert) {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setId(convert.getId());
         productEntity.setName(convert.getName());

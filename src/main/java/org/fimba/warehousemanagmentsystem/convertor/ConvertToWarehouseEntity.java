@@ -12,7 +12,7 @@ import java.util.Objects;
 public class ConvertToWarehouseEntity implements WarehouseAPIBaseConvetor<WarehouseDTO, WarehouseEntity> {
 
     @Override
-    public WarehouseEntity convertor(WarehouseDTO convert) {
+    public WarehouseEntity convert(WarehouseDTO convert) {
         WarehouseEntity warehouseEntity = new WarehouseEntity();
         warehouseEntity.setId(convert.getId());
         warehouseEntity.setName(convert.getName());
